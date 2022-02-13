@@ -1,6 +1,7 @@
 #include <parser/scanner.h>
 
 #include <gtest/gtest.h>
+#include <string> // std::string
 
 TEST(ScannerCString, Empty) {
   {
@@ -17,7 +18,7 @@ TEST(ScannerCString, Empty) {
 
 TEST(ScannerStdString, Empty) {
   {
-    std::string demo = "";
+    std::string demo{};
     parser::Scanner scanner(std::begin(demo), std::end(demo));
     EXPECT_TRUE(scanner.Empty());
   }
@@ -26,7 +27,7 @@ TEST(ScannerStdString, Empty) {
 TEST(ScannerCString, GetChar) {
   {
     char const* begin = "d";
-    parser::Scanner scanner(begin, begin + 1);
+    parser::Scanner scanner(begin, begin + 1); //NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic)
     EXPECT_FALSE(scanner.Empty());
     EXPECT_EQ(scanner.GetChar(), 'd');
     EXPECT_TRUE(scanner.Empty());

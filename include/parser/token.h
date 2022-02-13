@@ -1,6 +1,6 @@
 /**
  * @file token.h
- * @author SongXin (SXongin@outlook.com)
+ * @author Song Xin (SXongin@outlook.com)
  * @brief Define token class
  * @version 0.1
  * @date 2022-01-23
@@ -20,7 +20,7 @@ namespace parser {
  *
  */
 enum class TokenType {
-  T_EOF = 0,
+  END = 0,
   NAME = 1,
   COMMA,
   LBRACK,

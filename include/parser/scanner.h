@@ -1,6 +1,6 @@
 /**
  * @file scanner.h
- * @author SongXin (SXongin@outlook.com)
+ * @author Song Xin (SXongin@outlook.com)
  * @brief
  * @version 0.1
  * @date 2022-02-02
@@ -28,16 +28,17 @@ template <typename BeginT, typename EndT>
 requires InterVal<BeginT, EndT>
 class Scanner {
  public:
-  Scanner(BeginT b_itr, EndT e_itr) noexcept : b_itr_(b_itr), e_itr_(e_itr){}
-  bool Empty() const noexcept
+  using CharT = typename std::iterator_traits<BeginT>::value_type;
+  Scanner(BeginT b_itr, EndT e_itr) noexcept : b_itr_{b_itr}, e_itr_{e_itr}{}
+  [[nodiscard]] bool Empty() const noexcept
   requires std::equality_comparable_with<BeginT, EndT> {
     return b_itr_ == e_itr_;
   }
-  bool Empty() const noexcept
-  requires std::equality_comparable_with<typename std::iterator_traits<BeginT>::value_type, EndT> {
+  [[nodiscard]] bool Empty() const noexcept
+  requires std::equality_comparable_with<CharT, EndT> {
     return *b_itr_ == e_itr_;
   }
-  typename std::iterator_traits<BeginT>::value_type GetChar() noexcept {
+  CharT GetChar() noexcept {
     return *b_itr_++;
   }
  private:
