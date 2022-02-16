@@ -32,11 +32,13 @@ enum class TokenType {
  *
  */
 struct Token {
-  TokenType type;
+  TokenType type{TokenType::END};
   std::string text;
+  std::strong_ordering operator<=>(Token const&) const = default;
 };
 
 std::string ToString(Token const & t);
+
 
 }  // namespace parser
 

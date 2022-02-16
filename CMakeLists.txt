@@ -6,13 +6,18 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-  option(PARSER_BUILD_TESTS ON)
+  option(PARSER_BUILD_TESTS "parser build tests" ON)
 endif()
-add_subdirectory(dependences EXCLUED_FROM_ALL)
+
+add_compile_options($<$<CXX_COMPILER_ID:Clang>:-stdlib=libc++>)
+add_link_options($<$<CXX_COMPILER_ID:Clang>:-stdlib=libc++>)
+
+add_subdirectory(dependences EXCLUDE_FROM_ALL)
 
 add_library(
   parser
   src/token.cpp
+  include/parser/error.h
   include/parser/lexer.h
   include/parser/scanner.h
   include/parser/token.h

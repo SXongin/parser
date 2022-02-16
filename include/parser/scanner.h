@@ -30,16 +30,18 @@ class Scanner {
  public:
   using CharT = typename std::iterator_traits<BeginT>::value_type;
   Scanner(BeginT b_itr, EndT e_itr) noexcept : b_itr_{b_itr}, e_itr_{e_itr}{}
-  [[nodiscard]] bool Empty() const noexcept
-  requires std::equality_comparable_with<BeginT, EndT> {
-    return b_itr_ == e_itr_;
+  [[nodiscard]] bool Empty() const noexcept {
+    if constexpr (std::equality_comparable_with<BeginT, EndT>) {
+      return b_itr_ == e_itr_;
+    } else { // std::equality_comparable_with<CharT, EndT>
+      return *b_itr_ == e_itr_;
+    }
   }
-  [[nodiscard]] bool Empty() const noexcept
-  requires std::equality_comparable_with<CharT, EndT> {
-    return *b_itr_ == e_itr_;
+  [[nodiscard]] CharT Peek() const noexcept {
+    return *b_itr_;
   }
-  CharT GetChar() noexcept {
-    return *b_itr_++;
+  void Consume() noexcept {
+    ++b_itr_;
   }
  private:
   BeginT b_itr_;
