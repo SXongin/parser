@@ -19,6 +19,7 @@ add_library(
   src/token.cpp
   include/parser/error.h
   include/parser/lexer.h
+  include/parser/parser.h
   include/parser/scanner.h
   include/parser/token.h
 )
@@ -34,6 +35,7 @@ add_executable(
   src/test_lexer.cpp
   src/test_scanner.cpp
   src/test_token.cpp
+  src/test_parser.cpp
 )
 
 target_link_libraries(

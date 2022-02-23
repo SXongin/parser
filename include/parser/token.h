@@ -32,8 +32,8 @@ enum class TokenType {
  *
  */
 struct Token {
-  TokenType type{TokenType::END};
-  std::string text;
+  TokenType type_{TokenType::END};
+  std::string text_;
   std::strong_ordering operator<=>(Token const&) const = default;
 };
 

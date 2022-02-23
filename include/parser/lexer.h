@@ -2,6 +2,8 @@
  * @file lexer.h
  * @author Song Xin (SXongin@outlook.com)
  * @brief
+ * @details
+ * NAME : ('a'..'z'|'A'..'Z')+ ; // NAME is sequence of >=1 letter
  * @version 0.1
  * @date 2022-02-13
  *

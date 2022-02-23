@@ -30,7 +30,7 @@ string to_string(parser::TokenType t) {
 }
 
 string to_string(parser::Token const& t) {
-  return "<" + to_string(t.type) +  ", " + t.text + ">";
+  return "<" + to_string(t.type_) +  ", " + t.text_ + ">";
 }
 
 
