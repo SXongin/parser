@@ -30,33 +30,26 @@ requires requires(ScannerT s) {
 }
 class Lexer {
  public:
-  explicit Lexer(ScannerT scanner) : scanner_{std::move(scanner)} { Consume(); }
+  explicit Lexer(ScannerT scanner) : scanner_{std::move(scanner)} {}
   explicit Lexer(std::string const& str)
-      : scanner_{std::begin(str), std::end(str)} {
-    Consume();
-  }
-  explicit Lexer(char const* cstr) : scanner_{cstr, '\0'} { Consume(); }
+      : scanner_{std::begin(str), std::end(str)} {}
+  explicit Lexer(char const* cstr) : scanner_{cstr, '\0'} {}
 
-  [[nodiscard]] Token Peek() const noexcept { return token_; }
-
-  void Consume() noexcept(false) {
+  Token NextToken() noexcept(false) {
     while (!scanner_.Empty()) {
       CharT c = scanner_.Peek();
       switch (c) {
         case ',': {
-          token_ = {TokenType::COMMA, ","};
           scanner_.Consume();
-          return;
+          return {TokenType::COMMA, ","};;
         }
         case '[': {
-          token_ = {TokenType::LBRACK, "["};
           scanner_.Consume();
-          return;
+          return {TokenType::LBRACK, "["};
         }
         case ']': {
-          token_ = {TokenType::RBRACK, "]"};
           scanner_.Consume();
-          return;
+          return {TokenType::RBRACK, "]"};
         };
         default: {
           if (std::isspace(static_cast<unsigned char>(c)) != 0) {
@@ -71,15 +64,14 @@ class Lexer {
         }
       }
     }
-    token_ = {TokenType::END, ""};
+    return {TokenType::END, ""};
   }
 
  private:
   ScannerT scanner_;
-  Token token_;
   using CharT = typename ScannerT::CharT;
 
-  void scan_name(CharT c) {
+  Token scan_name(CharT c) {
     std::string name(1, c);
     while (!scanner_.Empty()) {
       c = scanner_.Peek();
@@ -90,7 +82,7 @@ class Lexer {
         break;
       }
     }
-    token_ = {TokenType::NAME, std::move(name)};
+    return {TokenType::NAME, std::move(name)};
   }
 };
 

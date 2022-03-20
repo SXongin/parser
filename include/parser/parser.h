@@ -16,6 +16,8 @@
 #ifndef PARSER_INCLUDE_PARSER_PARSER_H
 #define PARSER_INCLUDE_PARSER_PARSER_H
 
+// #include <array> // std::array
+
 #include "error.h"  // parser::ParseError
 #include "lexer.h"
 #include "scanner.h"
@@ -25,9 +27,9 @@ namespace parser {
 template <typename ScannerT>
 class Parser {
  public:
-  explicit Parser(Lexer<ScannerT> lexer) : lexer_{lexer} {}
-  explicit Parser(std::string const& s) : lexer_{s} {}
-  explicit Parser(char const* s) : lexer_{s} {}
+  explicit Parser(Lexer<ScannerT> lexer) : lexer_{lexer} { Init(); }
+  explicit Parser(std::string const& s) : lexer_{s} { Init(); }
+  explicit Parser(char const* s) : lexer_{s} { Init(); }
   void list() {
     Match(TokenType::LBRACK);
     elements();
@@ -36,32 +38,39 @@ class Parser {
 
   void elements() {
     element();
-    while (lexer_.Peek().type_ == TokenType::COMMA) {
+    while (look_ahead_.type_ == TokenType::COMMA) {
       Match(TokenType::COMMA);
       element();
     }
   }
 
   void element() {
-    if (lexer_.Peek().type_ == TokenType::NAME) {
+    if (look_ahead_.type_ == TokenType::NAME) {
       Match(TokenType::NAME);
-    } else if (lexer_.Peek().type_ == TokenType::LBRACK) {
+    } else if (look_ahead_.type_ == TokenType::LBRACK) {
       list();
     } else {
-      throw ParseError{"Expected a element but meet " + std::to_string(lexer_.Peek())};
+      throw ParseError{"Expected a element but meet " + std::to_string(look_ahead_)};
     }
   }
 
   void Match(TokenType type) {
-    if (lexer_.Peek().type_ == type) {
-      lexer_.Consume();
+    if (look_ahead_.type_ == type) {
+      look_ahead_ = lexer_.NextToken();
     } else {
       throw ParseError{"Miss match, expected " + std::to_string(type) +
-                        " but meet " + std::to_string(lexer_.Peek())};
+                        " but meet " + std::to_string(look_ahead_)};
     }
   }
  private:
   Lexer<ScannerT> lexer_;
+//  constexpr static std::ptrdiff_t kBufSize{2};
+//  std::array<Token, kBufSize> buffer_;
+  Token look_ahead_;
+
+  void Init() {
+    look_ahead_ = lexer_.NextToken();
+  }
 };
 Parser(std::string const&)
     ->Parser<Scanner<typename std::string::const_iterator,
