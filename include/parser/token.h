@@ -25,6 +25,7 @@ enum class TokenType {
   COMMA,
   LBRACK,
   RBRACK,
+  EQUALS,
 };
 
 /**

@@ -24,6 +24,8 @@ string to_string(parser::TokenType t) {
       return "LBRACK";
     case parser::TokenType::RBRACK:
       return "RBRACK";
+    case parser::TokenType::EQUALS:
+      return "EQUALS";
     default:
       return {};
   }

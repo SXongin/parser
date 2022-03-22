@@ -111,3 +111,18 @@ TEST(Parser, List) {
     EXPECT_THROW(p.list(), parser::ParseError);
   }
 }
+
+TEST(Parser, Equals) {
+  {
+    parser::Parser p{"a=b"};
+    EXPECT_NO_THROW(p.element());
+  }
+  {
+    parser::Parser p{"[a,b=c,[d,e]]"};
+    EXPECT_NO_THROW(p.list());
+  }
+  {
+    parser::Parser p{"a==b"};
+    EXPECT_THROW(p.element(), parser::ParseError);
+  }
+}

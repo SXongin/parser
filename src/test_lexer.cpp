@@ -18,7 +18,7 @@ TEST(Lexer, Construct) {
   }
 }
 
-TEST(Lexer, Peek) {
+TEST(Lexer, NextToken) {
   {
     std::string empty;
     parser::Lexer lexer{parser::Scanner{std::begin(empty), std::end(empty)}};

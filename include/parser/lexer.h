@@ -50,10 +50,19 @@ class Lexer {
         case ']': {
           scanner_.Consume();
           return {TokenType::RBRACK, "]"};
-        };
+        }
+        case '=': {
+          scanner_.Consume();
+          return {TokenType::EQUALS, "="};
+        }
         default: {
           if (std::isspace(static_cast<unsigned char>(c)) != 0) {
             scanner_.Consume();
+            while (!scanner_.Empty() &&
+                   std::isspace(static_cast<unsigned char>(scanner_.Peek())) !=
+                       0) {
+              scanner_.Consume();
+            }
             continue;
           }
           if (std::isalpha(static_cast<unsigned char>(c)) != 0) {

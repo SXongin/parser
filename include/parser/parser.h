@@ -6,7 +6,7 @@
  * grammar NestedNameList;
  * list : '[' elements ']' ; // match bracketed list
  * elements : element (',' element)* ; // match comma-separated list
- * element : NAME | list ; // element is name or nested list
+ * element : NAME '=' NAME | NAME | list ; // element is name or nested list
  * @version 0.1
  * @date 2022-02-20
  *
@@ -16,7 +16,7 @@
 #ifndef PARSER_INCLUDE_PARSER_PARSER_H
 #define PARSER_INCLUDE_PARSER_PARSER_H
 
-// #include <array> // std::array
+#include <array> // std::array
 
 #include "error.h"  // parser::ParseError
 #include "lexer.h"
@@ -38,38 +38,55 @@ class Parser {
 
   void elements() {
     element();
-    while (look_ahead_.type_ == TokenType::COMMA) {
+    while (LookAhead(1).type_ == TokenType::COMMA) {
       Match(TokenType::COMMA);
       element();
     }
   }
 
   void element() {
-    if (look_ahead_.type_ == TokenType::NAME) {
+    if (LookAhead(1).type_ == TokenType::NAME && LookAhead(2).type_ == TokenType::EQUALS) {
       Match(TokenType::NAME);
-    } else if (look_ahead_.type_ == TokenType::LBRACK) {
+      Match(TokenType::EQUALS);
+      Match(TokenType::NAME);
+    } else if (LookAhead(1).type_ == TokenType::NAME) {
+      Match(TokenType::NAME);
+    } else if (LookAhead(1).type_ == TokenType::LBRACK) {
       list();
     } else {
-      throw ParseError{"Expected a element but meet " + std::to_string(look_ahead_)};
+      throw ParseError{"Expected a element but meet " +
+                       std::to_string(LookAhead(1))};
     }
   }
 
   void Match(TokenType type) {
-    if (look_ahead_.type_ == type) {
-      look_ahead_ = lexer_.NextToken();
+    if (LookAhead(1).type_ == type) {
+      Consume();
     } else {
       throw ParseError{"Miss match, expected " + std::to_string(type) +
-                        " but meet " + std::to_string(look_ahead_)};
+                        " but meet " + std::to_string(LookAhead(1))};
     }
   }
+
  private:
   Lexer<ScannerT> lexer_;
-//  constexpr static std::ptrdiff_t kBufSize{2};
-//  std::array<Token, kBufSize> buffer_;
-  Token look_ahead_;
+  constexpr static std::ptrdiff_t kBufSize{2};
+  std::ptrdiff_t index_{0};
+  std::array<Token, kBufSize> buffer_{};
 
   void Init() {
-    look_ahead_ = lexer_.NextToken();
+    for(auto & t: buffer_) {
+      t = lexer_.NextToken();
+    }
+  }
+
+  void Consume() noexcept {
+    buffer_[index_] = lexer_.NextToken();
+    index_ = (index_ + 1) % kBufSize;
+  }
+
+  Token LookAhead(ptrdiff_t ahead) const noexcept {
+    return buffer_[(index_ + ahead - 1) % kBufSize];
   }
 };
 Parser(std::string const&)
