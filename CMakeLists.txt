@@ -27,6 +27,7 @@ add_library(
 target_include_directories(
   parser PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+  $<INSTALL_INTERFACE:include>
 )
 
 if(PARSER_BUILD_TESTS)
@@ -44,3 +45,26 @@ target_link_libraries(
   gtest_main
 )
 endif() # PARSER_BUILD_TESTS
+
+install(
+  TARGETS parser
+  EXPORT MyParser
+)
+
+install(
+  EXPORT MyParser
+  FILE parserTargets.cmake
+  DESTINATION lib/cmake/MyParser
+  NAMESPACE MyParser::
+)
+
+install(
+  FILES
+    MyParserConfig.cmake
+  DESTINATION lib/cmake/MyParser
+)
+
+install(
+  DIRECTORY include/
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
